@@ -1,0 +1,16 @@
+*.sublime-*
+__pycache__/
+bin/
+include/
+lib/
+lib64/
+.htaccess
+.user.ini
+.well-known/
+share/
+pyvenv.cfg
+*/.DS_Store
+.DS_Store
+.git/
+lib64
+pyvenv.cfg
