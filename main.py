@@ -14,7 +14,7 @@ def get_unique_number():
         session['device_id'] = str(uuid.uuid4())
 
     device_id = session['device_id']
-    print(device_id)
+    has_rewarded = True
 
     # 连接到数据库
     # 创建一个游标对象，用于执行SQL语句。
@@ -41,20 +41,20 @@ def get_unique_number():
     if device_id_exists:
         # 已经存在设备ID
         device_index = device_id_exists[0]
-        print(f'Device ID already exists.')
+        print(f'Device ID already exists:', device_id)
     else:
         # 插入数据到表格
         cursor.execute(
             "INSERT INTO unique_numbers (device_id) VALUES (?)", (device_id,)
         )
         device_index = cursor.lastrowid
-        print('Device ID not found. Inserted.')
+        print('Device ID not found. Inserted, device_index:', device_index)
 
     # 计算是第几个
     cursor.execute(
         "SELECT COUNT(*) FROM unique_numbers WHERE id <= ?", (device_index,)
     )
-    counter = cursor.fetchone()[0]
+    count = cursor.fetchone()[0]
 
     # 关闭数据库连接
     conn.commit()  # 提交更改
@@ -62,8 +62,9 @@ def get_unique_number():
     conn.close()  # 关闭数据库连接
 
     return_data = {
-        "uuid": device_id,
-        "count": counter
+        "device_id": device_id,
+        "count": count,
+        "has_rewarded": has_rewarded
     }
 
     return return_data
@@ -71,8 +72,12 @@ def get_unique_number():
 
 @app.route('/', methods=['GET'])
 def home():
-    your_number = get_unique_number()["count"]
-    return render_template("index.html", your_number=your_number)
+    data = get_unique_number()
+    return render_template(
+        "assign.html",
+        your_number=data["count"],
+        has_rewarded=data["has_rewarded"]
+    )
 
 
 @app.route('/getNumber', methods=['GET'])
@@ -82,3 +87,6 @@ def getNumber():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
+    # from gevent import pywsgi
+    # server = pywsgi.WSGIServer(('0.0.0.0', 5001), app)
+    server.serve_forever()
