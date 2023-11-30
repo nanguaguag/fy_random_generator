@@ -21,6 +21,12 @@
             height: 100vh;
         }
 
+        .prompt {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 5rem;
+        }
+
         .container {
             text-align: center;
         }
@@ -30,9 +36,12 @@
             width: 12.5rem;
             height: 12.5rem;
             border-radius: 50%;
+            border-width: 2rem;
+            border-color: #80bdf3;
+            border-style: solid;
             background-color: #4285f4;
             color: #ffffff;
-            font-size: 4.5rem;
+            font-size: 4rem;
             line-height: 12.5rem;
             margin-bottom: 2.5rem;
         }
@@ -41,7 +50,7 @@
 
 <body>
     <div class="container">
-        <h1>您的号码为</h1>
+        <div class="prompt">您的号码为</div>
         <div class="number">
             {{ your_number }}
         </div>
