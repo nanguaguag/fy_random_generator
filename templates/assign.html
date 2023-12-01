@@ -45,46 +45,36 @@
             line-height: 12.5rem;
             margin-bottom: 2.5rem;
         }
-
-        .chosen {
-            display: inline-block;
-            width: 12.5rem;
-            height: 12.5rem;
-            border-radius: 50%;
-            border-width: 2rem;
-            border-color: #FFEE58;
-            border-style: solid;
-            background-color: #FBC02D;
-            color: black;
-            font-size: 4rem;
-            line-height: 12.5rem;
-            margin-bottom: 2.5rem;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        {% if has_rewarded %}
-        <div class="prompt" style="color: #f5c344;">恭喜！您的号码被抽中</div>
-        <div id="number_id" class="chosen" has_rewarded="{{ has_rewarded }}">
+        {% if number_status == 0 %}
+        <div class="prompt">您的号码为</div>
+        <div id="number_id" class="number">
+            {{ your_number }}
+        </div>
+        {% elif number_status == 1 %}
+        <div class="prompt" style="color: #f5c344;">🎉 恭喜 🎉<br>您的号码被抽中</div>
+        <div id="number_id" class="number" style="border-color: #FFEE58;background-color: #FDD835;color: black;">
             {{ your_number }}
         </div>
         {% else %}
-        <div class="prompt">您的号码为</div>
-        <div id="number_id" class="number" has_rewarded="{{ has_rewarded }}">
+        <div class="prompt">您是管理员哦</div>
+        <div id="number_id" class="number">
             {{ your_number }}
         </div>
         {% endif %}
     </div>
 
+    <!-- 撒花 JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
         let your_number = document.getElementById("number_id");
-        var has_rewarded = your_number.getAttribute("has_rewarded");
+        let status = "{{ number_status }}";
         function confetti_effect() {
-            console.log(has_rewarded);
             var count = 600;
             var defaults = {
                 origin: { y: 0.7 }
@@ -122,7 +112,7 @@
             });
         }
 
-        if (has_rewarded === "True") {
+        if (status === "1") {
             confetti_effect()
         }
     </script>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wheel Randomizer</title>
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      background-color: transparent;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .spinner {
+      position: relative;
+      height: 400px;
+      width: 400px;
+      min-height: 400px;
+      min-width: 400px;
+      border-radius: 0%;
+      box-shadow: 0px 0px 160px rgba(17, 17, 17, 0.25);
+      overflow: hidden;
+    }
+
+    .spinner__body {
+      position: absolute;
+      border-top: 200px solid transparent;
+      border-right: 200px solid #7FC2C2;
+      border-bottom: 200px solid #7FC2C2;
+      border-left: 200px solid #7FC2C2;
+      z-index: 200;
+    }
+
+    .spinner__start-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 140px;
+      width: 140px;
+      border-radius: 0%;
+      font-family: "Dosis", sans-serif;
+      font-weight: bold;
+      font-size: 64px;
+      color: #f5f5f5;
+      background-color: #7FC2C2;
+      outline: none;
+      border: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      z-index: 300;
+      transition: height 0.1s ease-in, width 0.2s ease-in, color 0.1s ease-in, background-color 0.1s ease-in;
+    }
+
+    .spinner__start-button:hover {
+      height: 150px;
+      width: 150px;
+      background-color: #8CD0D0;
+      box-shadow: 0px 0px 44px rgba(17, 17, 17, 0.25);
+    }
+
+    .spinner__start-button:active {
+      height: 135px;
+      width: 135px;
+      color: #7FC2C2;
+      background-color: #459A9A;
+      box-shadow: none;
+      -webkit-animation: shaking 0.15s ease-in-out infinite;
+      animation: shaking 0.15s ease-in-out infinite;
+    }
+
+    .spinner__input {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      padding: 2px 10px;
+      transform: translatex(-50%);
+      font-family: "Dosis", sans-serif;
+      font-size: 48px;
+      font-weight: bold;
+      color: #7FC2C2;
+      background: #f5f5f5;
+      border-radius: 36px;
+      text-align: center;
+      outline: none;
+      border: none;
+      z-index: 300;
+      transition: 0.1s ease-in;
+    }
+
+    .spinner__input:hover {
+      color: #8CD0D0;
+    }
+
+    .spinner__input:focus {
+      color: #459A9A;
+    }
+
+    .spinner__plate {
+      position: absolute;
+      height: 400px;
+      width: 400px;
+    }
+
+    .spinner__plate--spin {
+      -webkit-animation: spinning 6s ease-out;
+      animation: spinning 6s ease-out;
+    }
+
+    .spinner__item {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translatex(-50%);
+      height: calc(200px - 40px);
+      padding-top: 40px;
+      font-family: "Dosis", sans-serif;
+      font-weight: bold;
+      font-size: 48px;
+      color: #459A9A;
+      text-align: center;
+      transform-origin: 50% 100%;
+      z-index: 10;
+    }
+
+    .spinner__item:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translatex(-50%);
+      border-top: 200px solid #f5f5f5;
+      border-right: 200px solid transparent;
+      border-bottom: 200px solid transparent;
+      border-left: 200px solid transparent;
+      z-index: -1;
+    }
+
+    .spinner__item:nth-child(even):before {
+      border-top: 200px solid #EBEBEB;
+    }
+
+    .spinner__item--left {
+      transform: translatex(-50%) rotate(-90deg);
+    }
+
+    .spinner__item--top {
+      transform: translatex(-50%) rotate(0deg);
+    }
+
+    .spinner__item--right {
+      transform: translatex(-50%) rotate(90deg);
+    }
+
+    .spinner__item--bottom {
+      transform: translatex(-50%) rotate(180deg);
+    }
+
+    @-webkit-keyframes shaking {
+      0% {
+        top: calc(50% + 1px);
+        left: calc(50% - 1px);
+      }
+
+      25% {
+        top: calc(50% - 1px);
+        left: calc(50% + 1px);
+      }
+
+      50% {
+        top: calc(50% + 1px);
+        left: calc(50% + 1px);
+      }
+
+      75% {
+        top: calc(50% - 1px);
+        left: calc(50% - 1px);
+      }
+    }
+
+    @keyframes shaking {
+      0% {
+        top: calc(50% + 1px);
+        left: calc(50% - 1px);
+      }
+
+      25% {
+        top: calc(50% - 1px);
+        left: calc(50% + 1px);
+      }
+
+      50% {
+        top: calc(50% + 1px);
+        left: calc(50% + 1px);
+      }
+
+      75% {
+        top: calc(50% - 1px);
+        left: calc(50% - 1px);
+      }
+    }
+
+    @-webkit-keyframes spinning {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(5400deg);
+      }
+    }
+
+    .container {
+      text-align: center;
+      margin-left: 5rem;
+    }
+
+    .number {
+      cursor: pointer;
+      display: inline-block;
+      width: 12.5rem;
+      height: 12.5rem;
+      border-radius: 50%;
+      border-width: 2rem;
+      border-color: #80bdf3;
+      border-style: solid;
+      background-color: #4285f4;
+      color: #ffffff;
+      font-size: 4rem;
+      font-family: "Dosis", sans-serif;
+      font-weight: bold;
+      line-height: 12.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .number.chosen {
+      border-color: #FFEE58;
+      background-color: #FDD835;
+      color: black;
+    }
+
+    @keyframes spinning {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(5400deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <div class="spinner">
+    <div class="spinner__body"></div>
+    <button class="spinner__start-button">GO!</button>
+    <input type="number" min="1" max="{{ count }}" class="spinner__input" value="{{ count }}">
+    <div class="spinner__plate">
+      <div class="spinner__item spinner__item--top">?</div>
+      <div class="spinner__item spinner__item--right">?</div>
+      <div class="spinner__item spinner__item--bottom">?</div>
+      <div class="spinner__item spinner__item--left">?</div>
+    </div>
+  </div>
+  <div class="container">
+    <div id="number_id" onclick="chooseThis()" class="number">?</div>
+  </div>
+  <!-- partial -->
+  <script>
+    const spinner = document.querySelector('.spinner');
+    const startBtn = document.querySelector('.spinner__start-button');
+    const max_input = document.querySelector('.spinner__input');
+    let plate = document.querySelector('.spinner__plate');
+    let items = [...document.getElementsByClassName('spinner__item')];
+
+    max_input.addEventListener('change', e => {
+      max_input.value = max_input.value.replace("\D", '');
+      if (max_input.value === '' || +max_input.value > +max_input.max) {
+        max_input.value = max_input.max;
+      }
+      if (+max_input.value < +max_input.min) {
+        max_input.value = max_input.min;
+      }
+    });
+
+    startBtn.addEventListener('click', function() {
+      let number = document.getElementById("number_id");
+      number.classList.remove("chosen");
+      number.textContent = '?';
+      executeAfterAnimation();
+      if (!plate.classList.contains('spinner__plate--spin')) {
+        plate.classList.add('spinner__plate--spin');
+      } else {
+        const currPlate = plate;
+        const newPlate = plate.cloneNode(true);
+        currPlate.parentNode.replaceChild(newPlate, currPlate);
+        plate = newPlate;
+        items = [...document.getElementsByClassName('spinner__item')];
+      }
+    });
+
+    function randomizeItems() {
+      items.forEach(item => {
+        const rand = random(1, +max_input.value);
+        item.textContent = rand;
+      });
+    }
+
+    function executeAfterAnimation() {
+      var count = 0;
+      var interval = setInterval(function() {
+        count++;
+        randomizeItems();
+        let top_item = document.querySelector('.spinner__item--top');
+        // console.log(top_item.textContent)
+        let number = document.getElementById("number_id");
+        number.textContent = top_item.textContent
+        if (count === 50) {
+          clearInterval(interval);
+        } // 当循环次数达到 50 时，清除循环
+      }, 100);
+    }
+
+    function chooseThis() {
+      let top_item = document.querySelector('.spinner__item--top');
+      let number = document.getElementById("number_id");
+      number.classList.add("chosen");
+      fetch('/api/choose', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json' // 根据实际情况设置请求头
+        },
+        body: JSON.stringify({
+          number: top_item.textContent
+        })
+      }).then(function(response) {
+        console.log(response)
+        if (response.ok) {
+          confetti_effect()
+        }
+      })
+    }
+
+    function random(min, max) {
+      let rand = min - 0.5 + Math.random() * (max - min + 1);
+      return Math.round(rand);
+    }
+  </script>
+  <!-- 撒花 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script>
+    function confetti_effect() {
+      var count = 600;
+      var defaults = {
+        origin: { y: 0.7, x: 0.7 }
+      };
+
+      function fire(particleRatio, opts) {
+        confetti({
+          ...defaults,
+          ...opts,
+          particleCount: Math.floor(count * particleRatio)
+        });
+      }
+
+      fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      fire(0.2, {
+        spread: 60,
+      });
+      fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
+    }
+  </script>
+</body>
+
+</html>
