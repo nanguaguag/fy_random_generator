@@ -12,7 +12,7 @@ def multithread_scrapy(thread_id):
     count[thread_id] = 0
 
     for i in range(100):
-        response = requests.get('http://127.0.0.1:5000/getNumber')
+        response = requests.get('http://127.0.0.1:5001/getNumber')
         print(response.text)
         count[thread_id] += 1
         print(thread_id, count[thread_id], sum(count.values()))

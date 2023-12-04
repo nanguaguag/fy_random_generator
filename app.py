@@ -1,12 +1,8 @@
-from datetime import timedelta
-from flask import Flask, session, jsonify, render_template, request
+from flask import session, jsonify, render_template, request
 import sqlite3
 import uuid
 import json
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = "abcdefghijklmn"
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # cookies在7天后过期
+from __init__ import *
 
 
 def get_min_max():
