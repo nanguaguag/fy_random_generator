@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div id="number_container" class="container">
         {% if number_status == 0 %}
         <div class="prompt">您的号码为</div>
         <div id="number_id" class="number">
@@ -33,13 +33,23 @@
         </div>
         {% endif %}
     </div>
-
     <!-- 撒花 JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
         let your_number = document.getElementById("number_id");
         let status = "{{ number_status }}";
+
+        // 判断是否在微信浏览器中打开
+        function isWeixinBrowser() {
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+               return true;
+            } else {
+                return false;
+            }
+        }
+
         function confetti_effect() {
             var count = 600;
             var defaults = {

@@ -170,12 +170,18 @@ def get_unique_number():
 
 @app.route('/', methods=['GET'])
 def home():
-    data = get_unique_number()
-    return render_template(
-        "assign.html",
-        your_number=data["count"],
-        number_status=data["status"]
-    )
+    user_agent = request.headers.get('User-Agent', '')
+    if 'MicroMessenger' in user_agent or 'WeChat' in user_agent:
+        print('在微信浏览器中打开')
+        data = get_unique_number()
+        return render_template(
+            "assign.html",
+            your_number=data["count"],
+            number_status=data["status"]
+        )
+    else:
+        print('非微信浏览器')
+        return render_template("deny.html")
 
 
 @app.route('/wheel', methods=['GET', 'POST'])
@@ -199,10 +205,10 @@ def wheel():
     data = get_unique_number()
     if data["status"] != 2:  # 不是管理员
         return render_template("auth.html")
-    else:
-        min_num, max_num = get_min_max()
-        print(min_num, max_num)
-        return render_template("wheel.html", count=max_num - min_num + 1)
+    else: # verified admin password
+        # min_num, max_num = get_min_max()
+        # print(min_num, max_num)
+        return render_template("wheel.html")
 
     return render_template("auth.html", auth_code=3)
 
@@ -219,6 +225,10 @@ def choose():
     except ValueError as e:
         return jsonify(code=-1, msg=e)
 
+@app.route('/api/getCount', methods=['get'])
+def getCount():
+    min_num, max_num = get_min_max()
+    return jsonify(count=max_num - min_num + 1)
 
 @app.route('/api/getNumber', methods=['GET'])
 def getNumber():
