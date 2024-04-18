@@ -107,6 +107,7 @@
           },
           body: JSON.stringify({
             number: top_item.textContent,
+            token: "{{ token }}",
           }),
         }).then(function (response) {
           console.log(response);
@@ -122,7 +123,7 @@
       }
 
       function setMax() {
-        fetch("/api/getCount", {
+        fetch("/api/getCount?token={{ token }}", {
           method: "GET",
         })
           .then((response) => response.json())

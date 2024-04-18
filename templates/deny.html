@@ -12,11 +12,28 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="icon" href="favicon.ico" />
+    <style>
+      .deny-message {
+        text-align: center;
+        margin-top: 5rem;
+        font-size: 1.5rem;
+        font-family: Arial, sans-serif;
+      }
+    </style>
   </head>
 
   <body>
     <div class="deny-message">
-      <p>为了防止使用多个浏览器获取到多个号码，请您使用微信打开!</p>
+      <p id="deny_msg">
+        <b>
+          为了防止使用多个浏览器获取到多个号码，请复制以下链接并粘贴到微信打开！
+        </b>
+        <br />
+      </p>
     </div>
   </body>
+  <script>
+    msg = document.getElementById("deny_msg");
+    msg.innerHTML += window.location.href;
+  </script>
 </html>

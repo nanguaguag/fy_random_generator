@@ -23,7 +23,9 @@
     <div id="number_container" class="container">
       {% if number_status == 0 %}
       <div class="prompt">您的号码为</div>
-      <div id="number_id" class="number">{{ your_number }}</div>
+      <div id="number_id" class="number" style="cursor: default">
+        {{ your_number }}
+      </div>
       {% elif number_status == 1 %}
       <div class="prompt" style="color: #f5c344">
         🎉 恭喜 🎉<br />您的号码被抽中

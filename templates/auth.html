@@ -45,6 +45,20 @@
   <body>
     <form class="loginForm" action="/wheel" method="post">
       <h4>为确保您是管理员，请输入密码</h4>
+      <div class="tokenForm">
+        <span class="material-icons">token</span>
+        <div
+          class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+        >
+          <input
+            class="mdl-textfield__input"
+            name="token"
+            type="text"
+            id="token_id"
+          />
+          <label class="mdl-textfield__label" for="token_id">请输入Token</label>
+        </div>
+      </div>
       <div class="inputForm">
         <span class="material-icons">key</span>
         <div
