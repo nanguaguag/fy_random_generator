@@ -1,98 +1,103 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>您的号码</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0;  maximum-scale=1.0 user-scalable=no;">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="collapsable" content="none">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link href="https://fonts.googleapis.com/css?family=Dosis:400,700&display=swap" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width; initial-scale=1.0;  maximum-scale=1.0 user-scalable=no;"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="collapsable" content="none" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="favicon.ico" />
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="number_container" class="container">
-        {% if number_status == 0 %}
-        <div class="prompt">您的号码为</div>
-        <div id="number_id" class="number">
-            {{ your_number }}
-        </div>
-        {% elif number_status == 1 %}
-        <div class="prompt" style="color: #f5c344;">🎉 恭喜 🎉<br>您的号码被抽中</div>
-        <div id="number_id" class="number" style="border-color: #FFEE58;background-color: #FDD835;color: black;">
-            {{ your_number }}
-        </div>
-        {% else %}
-        <div class="prompt">您是管理员哦</div>
-        <div id="number_id" class="number">
-            {{ your_number }}
-        </div>
-        {% endif %}
+      {% if number_status == 0 %}
+      <div class="prompt">您的号码为</div>
+      <div id="number_id" class="number">{{ your_number }}</div>
+      {% elif number_status == 1 %}
+      <div class="prompt" style="color: #f5c344">
+        🎉 恭喜 🎉<br />您的号码被抽中
+      </div>
+      <div
+        id="number_id"
+        class="number"
+        style="border-color: #ffee58; background-color: #fdd835; color: black"
+      >
+        {{ your_number }}
+      </div>
+      {% else %}
+      <div class="prompt">您是管理员哦</div>
+      <div id="number_id" class="number">{{ your_number }}</div>
+      {% endif %}
     </div>
     <!-- 撒花 JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
-        let your_number = document.getElementById("number_id");
-        let status = "{{ number_status }}";
+      let your_number = document.getElementById("number_id");
+      let status = "{{ number_status }}";
 
-        // 判断是否在微信浏览器中打开
-        function isWeixinBrowser() {
-            var ua = window.navigator.userAgent.toLowerCase();
-            if (ua.match(/MicroMessenger/i) == 'micromessenger') {
-               return true;
-            } else {
-                return false;
-            }
+      // 判断是否在微信浏览器中打开
+      function isWeixinBrowser() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function confetti_effect() {
+        var count = 600;
+        var defaults = {
+          origin: { y: 0.7 },
+        };
+
+        function fire(particleRatio, opts) {
+          confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(count * particleRatio),
+          });
         }
 
-        function confetti_effect() {
-            var count = 600;
-            var defaults = {
-                origin: { y: 0.7 }
-            };
+        fire(0.25, {
+          spread: 26,
+          startVelocity: 55,
+        });
+        fire(0.2, {
+          spread: 60,
+        });
+        fire(0.35, {
+          spread: 100,
+          decay: 0.91,
+          scalar: 0.8,
+        });
+        fire(0.1, {
+          spread: 120,
+          startVelocity: 25,
+          decay: 0.92,
+          scalar: 1.2,
+        });
+        fire(0.1, {
+          spread: 120,
+          startVelocity: 45,
+        });
+      }
 
-            function fire(particleRatio, opts) {
-                confetti({
-                    ...defaults,
-                    ...opts,
-                    particleCount: Math.floor(count * particleRatio)
-                });
-            }
-
-            fire(0.25, {
-                spread: 26,
-                startVelocity: 55,
-            });
-            fire(0.2, {
-                spread: 60,
-            });
-            fire(0.35, {
-                spread: 100,
-                decay: 0.91,
-                scalar: 0.8
-            });
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 25,
-                decay: 0.92,
-                scalar: 1.2
-            });
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 45,
-            });
-        }
-
-        if (status === "1") {
-            confetti_effect()
-        }
+      if (status === "1") {
+        confetti_effect();
+      }
     </script>
-
-</body>
-
+  </body>
 </html>

@@ -4,18 +4,19 @@ import sqlite3
 import uuid
 import json
 
-app = Flask(__name__, static_url_path='')
-app.config['SECRET_KEY'] = 'abcdefghijklmn'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # cookies在7天后过期
+app = Flask(__name__, static_url_path="")
+app.config["SECRET_KEY"] = "abcdefghijklmn"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)  # cookies在7天后过期
+
 
 def get_min_max():
-    connection = sqlite3.connect('unique_numbers.db')
+    connection = sqlite3.connect("unique_numbers.db")
     cursor = connection.cursor()
     device_id = get_device_id()
 
     # 创建表格（如果不存在）
     cursor.execute(
-        '''
+        """
         CREATE TABLE IF NOT EXISTS unique_numbers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             device_id TEXT,
@@ -23,7 +24,7 @@ def get_min_max():
             status INTEGER DEFAULT 0 CHECK(status IN (0, 1, 2, 3)),
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        '''
+        """
     )
 
     # 执行查询
@@ -41,20 +42,20 @@ def get_min_max():
 
 def get_device_id():
     if session.get("device_id") is None:
-        session['device_id'] = str(uuid.uuid4())
+        session["device_id"] = str(uuid.uuid4())
 
-    return session['device_id']
+    return session["device_id"]
 
 
 def set_to_admin():
     # 连接到数据库
     # 创建一个游标对象，用于执行SQL语句。
-    connection = sqlite3.connect('unique_numbers.db')
+    connection = sqlite3.connect("unique_numbers.db")
     cursor = connection.cursor()
     device_id = get_device_id()
     # 创建表格（如果不存在）
     cursor.execute(
-        '''
+        """
         CREATE TABLE IF NOT EXISTS unique_numbers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             device_id TEXT,
@@ -62,12 +63,11 @@ def set_to_admin():
             status INTEGER DEFAULT 0 CHECK(status IN (0, 1, 2, 3)),
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        '''
+        """
     )
     # 升为管理员
     cursor.execute(
-        "UPDATE unique_numbers SET status = 2 WHERE device_id = ?", (
-            device_id,)
+        "UPDATE unique_numbers SET status = 2 WHERE device_id = ?", (device_id,)
     )
 
     # 关闭数据库连接
@@ -79,12 +79,12 @@ def set_to_admin():
 def set_id_chosen(_id):
     # 连接到数据库
     # 创建一个游标对象，用于执行SQL语句。
-    connection = sqlite3.connect('unique_numbers.db')
+    connection = sqlite3.connect("unique_numbers.db")
     cursor = connection.cursor()
     device_id = get_device_id()
     # 创建表格（如果不存在）
     cursor.execute(
-        '''
+        """
         CREATE TABLE IF NOT EXISTS unique_numbers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             device_id TEXT,
@@ -92,12 +92,10 @@ def set_id_chosen(_id):
             status INTEGER DEFAULT 0 CHECK(status IN (0, 1, 2, 3)),
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        '''
+        """
     )
     # 升为管理员
-    cursor.execute(
-        "UPDATE unique_numbers SET status = 1 WHERE id = ?", (_id,)
-    )
+    cursor.execute("UPDATE unique_numbers SET status = 1 WHERE id = ?", (_id,))
 
     # 关闭数据库连接
     connection.commit()  # 提交更改
@@ -111,12 +109,12 @@ def get_unique_number():
 
     # 连接到数据库
     # 创建一个游标对象，用于执行SQL语句。
-    connection = sqlite3.connect('unique_numbers.db')
+    connection = sqlite3.connect("unique_numbers.db")
     cursor = connection.cursor()
 
     # 创建表格（如果不存在）
     cursor.execute(
-        '''
+        """
         CREATE TABLE IF NOT EXISTS unique_numbers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             device_id TEXT,
@@ -124,36 +122,32 @@ def get_unique_number():
             status INTEGER DEFAULT 0 CHECK(status IN (0, 1, 2, 3)),
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        '''
+        """
     )
 
     # 查询设备ID是否已存在
-    cursor.execute(
-        "SELECT id FROM unique_numbers WHERE device_id = ?", (device_id,)
-    )
+    cursor.execute("SELECT id FROM unique_numbers WHERE device_id = ?", (device_id,))
     device_id_exists = cursor.fetchone()
 
     if device_id_exists:
         # 已经存在设备ID
         device_index = device_id_exists[0]
         cursor.execute(
-            "SELECT status FROM unique_numbers WHERE device_id = ?", (
-                device_id,)  # 选中号码状态
+            "SELECT status FROM unique_numbers WHERE device_id = ?",
+            (device_id,),  # 选中号码状态
         )
         status = cursor.fetchone()[0]  # 更新status: 0/1/2/3
-        print(f'Device ID already exists:', device_id)
+        print(f"Device ID already exists:", device_id)
     else:
         # 插入数据到表格
         cursor.execute(
             "INSERT INTO unique_numbers (device_id) VALUES (?)", (device_id,)
         )
         device_index = cursor.lastrowid
-        print('Device ID not found. Inserted, device_index:', device_index)
+        print("Device ID not found. Inserted, device_index:", device_index)
 
     # 计算是第几个
-    cursor.execute(
-        "SELECT COUNT(*) FROM unique_numbers WHERE id <= ?", (device_index,)
-    )
+    cursor.execute("SELECT COUNT(*) FROM unique_numbers WHERE id <= ?", (device_index,))
     count = cursor.fetchone()[0]
 
     # 关闭数据库连接
@@ -171,23 +165,21 @@ def get_unique_number():
     return return_data
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def home():
-    user_agent = request.headers.get('User-Agent', '')
-    if 'MicroMessenger' in user_agent or 'WeChat' in user_agent:
-        print('在微信浏览器中打开')
+    user_agent = request.headers.get("User-Agent", "")
+    if "MicroMessenger" in user_agent or "WeChat" in user_agent:
+        print("在微信浏览器中打开")
         data = get_unique_number()
         return render_template(
-            "assign.html",
-            your_number=data["count"],
-            number_status=data["status"]
+            "assign.html", your_number=data["count"], number_status=data["status"]
         )
     else:
-        print('非微信浏览器')
+        print("非微信浏览器")
         return render_template("deny.html")
 
 
-@app.route('/wheel', methods=['GET', 'POST'])
+@app.route("/wheel", methods=["GET", "POST"])
 def wheel():
     passwd = request.form.get("passwd")  # 管理员密码
     # "0": "登陆成功！",
@@ -208,7 +200,7 @@ def wheel():
     data = get_unique_number()
     if data["status"] != 2:  # 不是管理员
         return render_template("auth.html")
-    else: # verified admin password
+    else:  # verified admin password
         # min_num, max_num = get_min_max()
         # print(min_num, max_num)
         return render_template("wheel.html")
@@ -216,10 +208,10 @@ def wheel():
     return render_template("auth.html", auth_code=3)
 
 
-@app.route('/api/choose', methods=['POST'])
+@app.route("/api/choose", methods=["POST"])
 def choose():
     data = request.get_json()
-    number = data['number']
+    number = data["number"]
     try:
         number = int(number)
         min_num, _ = get_min_max()
@@ -228,18 +220,20 @@ def choose():
     except ValueError as e:
         return jsonify(code=-1, msg=e)
 
-@app.route('/api/getCount', methods=['get'])
+
+@app.route("/api/getCount", methods=["get"])
 def getCount():
     min_num, max_num = get_min_max()
     return jsonify(count=max_num - min_num + 1)
 
-@app.route('/api/getNumber', methods=['GET'])
+
+@app.route("/api/getNumber", methods=["GET"])
 def getNumber():
     return jsonify(get_unique_number())
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5001)
     # from gevent import pywsgi
     # server = pywsgi.WSGIServer(('0.0.0.0', 5001), app)
-    server.serve_forever()
+    # server.serve_forever()

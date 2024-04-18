@@ -1,181 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wheel Randomizer</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <link rel="icon" href="favicon.ico" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wheel Randomizer</title>
-  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700&display=swap" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
-  <link rel="icon" href="favicon.ico" />
-</head>
-
-<body>
-  <!-- overlay that can not be clicked or removed -->
-  <div id="overlay"></div>
-  <!-- partial:index.partial.html -->
-  <div class="spinner">
-    <div class="spinner__body"></div>
-    <button class="spinner__start-button">GO!</button>
-    <input id="spinner_input" type="number" min="1" max="" class="spinner__input" value="">
-    <div class="spinner__plate">
-      <div class="spinner__item spinner__item--top">?</div>
-      <div class="spinner__item spinner__item--right">?</div>
-      <div class="spinner__item spinner__item--bottom">?</div>
-      <div class="spinner__item spinner__item--left">?</div>
+  <body>
+    <!-- overlay that can not be clicked or removed -->
+    <div id="overlay"></div>
+    <!-- partial:index.partial.html -->
+    <div class="spinner">
+      <div class="spinner__body"></div>
+      <button class="spinner__start-button">GO!</button>
+      <input
+        id="spinner_input"
+        type="number"
+        min="1"
+        max=""
+        class="spinner__input"
+        value=""
+      />
+      <div class="spinner__plate">
+        <div class="spinner__item spinner__item--top">?</div>
+        <div class="spinner__item spinner__item--right">?</div>
+        <div class="spinner__item spinner__item--bottom">?</div>
+        <div class="spinner__item spinner__item--left">?</div>
+      </div>
     </div>
-  </div>
-  <div class="container" style="margin-left: 5rem;">
-    <div id="number_id" onclick="chooseThis()" class="number">?</div>
-  </div>
-  <!-- partial -->
-  <script>
-    const spinner = document.querySelector('.spinner');
-    const startBtn = document.querySelector('.spinner__start-button');
-    const max_input = document.querySelector('.spinner__input');
-    let plate = document.querySelector('.spinner__plate');
-    let items = [...document.getElementsByClassName('spinner__item')];
+    <div class="container" style="margin-left: 5rem">
+      <div id="number_id" onclick="chooseThis()" class="number">?</div>
+    </div>
+    <!-- partial -->
+    <script>
+      const spinner = document.querySelector(".spinner");
+      const startBtn = document.querySelector(".spinner__start-button");
+      const max_input = document.querySelector(".spinner__input");
+      let plate = document.querySelector(".spinner__plate");
+      let items = [...document.getElementsByClassName("spinner__item")];
 
-    max_input.addEventListener('change', e => {
-      max_input.value = max_input.value.replace("\D", '');
-      if (max_input.value === '' || +max_input.value > +max_input.max) {
-        max_input.value = max_input.max;
-      }
-      if (+max_input.value < +max_input.min) {
-        max_input.value = max_input.min;
-      }
-    });
-
-    startBtn.addEventListener('click', function() {
-      let number = document.getElementById("number_id");
-      number.classList.remove("chosen");
-      number.textContent = '?';
-      executeAfterAnimation();
-      if (!plate.classList.contains('spinner__plate--spin')) {
-        plate.classList.add('spinner__plate--spin');
-      } else {
-        const currPlate = plate;
-        const newPlate = plate.cloneNode(true);
-        currPlate.parentNode.replaceChild(newPlate, currPlate);
-        plate = newPlate;
-        items = [...document.getElementsByClassName('spinner__item')];
-      }
-    });
-
-    function randomizeItems() {
-      items.forEach(item => {
-        const rand = random(1, +max_input.value);
-        item.textContent = rand;
-      });
-    }
-
-    function executeAfterAnimation() {
-      var count = 0;
-      var overlay = document.getElementById('overlay');
-      overlay.style.display = 'block';
-      var interval = setInterval(function() {
-        count++;
-        randomizeItems();
-        let top_item = document.querySelector('.spinner__item--top');
-        // console.log(top_item.textContent)
-        let number = document.getElementById("number_id");
-        number.textContent = top_item.textContent
-        if (count === 50) {
-          clearInterval(interval);
-          overlay.style.display = 'none';
-        } // 当循环次数达到 50 时，清除循环
-      }, 100);
-    }
-
-    function chooseThis() {
-      let top_item = document.querySelector('.spinner__item--top');
-      let number = document.getElementById("number_id");
-      number.classList.add("chosen");
-      fetch('/api/choose', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json' // 根据实际情况设置请求头
-        },
-        body: JSON.stringify({
-          number: top_item.textContent
-        })
-      }).then(function(response) {
-        console.log(response)
-        if (response.ok) {
-          confetti_effect()
+      max_input.addEventListener("change", (e) => {
+        max_input.value = max_input.value.replace("\D", "");
+        if (max_input.value === "" || +max_input.value > +max_input.max) {
+          max_input.value = max_input.max;
         }
-      })
-    }
-
-    function random(min, max) {
-      let rand = min - 0.5 + Math.random() * (max - min + 1);
-      return Math.round(rand);
-    }
-
-    function setMax() {
-      fetch('/api/getCount', {
-          method: 'GET',
-      }).then(response => response.json()
-      ).then(data => {
-        let _count = data.count;
-        console.log(`Count is now: ${_count}`);
-        // 获取元素
-        var InputElement = document.getElementById('spinner_input');
-        // 更改max属性
-        InputElement.max = _count;
-        // 更改value属性
-        InputElement.value = _count;
-      }).catch(error => {
-        console.error('Error:', error)
+        if (+max_input.value < +max_input.min) {
+          max_input.value = max_input.min;
+        }
       });
-    }
 
-    document.addEventListener("DOMContentLoaded", function() {
-      // DOM结构就绪后开始轮询
-      setInterval(setMax, 1000);
-    });
-  </script>
-  <!-- 撒花 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-  <script>
-    function confetti_effect() {
-      var count = 600;
-      var defaults = {
-        origin: { y: 0.7, x: 0.7 }
-      };
+      startBtn.addEventListener("click", function () {
+        let number = document.getElementById("number_id");
+        number.classList.remove("chosen");
+        number.textContent = "?";
+        executeAfterAnimation();
+        if (!plate.classList.contains("spinner__plate--spin")) {
+          plate.classList.add("spinner__plate--spin");
+        } else {
+          const currPlate = plate;
+          const newPlate = plate.cloneNode(true);
+          currPlate.parentNode.replaceChild(newPlate, currPlate);
+          plate = newPlate;
+          items = [...document.getElementsByClassName("spinner__item")];
+        }
+      });
 
-      function fire(particleRatio, opts) {
-        confetti({
-          ...defaults,
-          ...opts,
-          particleCount: Math.floor(count * particleRatio)
+      function randomizeItems() {
+        items.forEach((item) => {
+          const rand = random(1, +max_input.value);
+          item.textContent = rand;
         });
       }
 
-      fire(0.25, {
-        spread: 26,
-        startVelocity: 55,
-      });
-      fire(0.2, {
-        spread: 60,
-      });
-      fire(0.35, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.8
-      });
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 25,
-        decay: 0.92,
-        scalar: 1.2
-      });
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 45,
-      });
-    }
-  </script>
-</body>
+      function executeAfterAnimation() {
+        var count = 0;
+        var overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
+        var interval = setInterval(function () {
+          count++;
+          randomizeItems();
+          let top_item = document.querySelector(".spinner__item--top");
+          // console.log(top_item.textContent)
+          let number = document.getElementById("number_id");
+          number.textContent = top_item.textContent;
+          if (count === 50) {
+            clearInterval(interval);
+            overlay.style.display = "none";
+          } // 当循环次数达到 50 时，清除循环
+        }, 100);
+      }
 
+      function chooseThis() {
+        let top_item = document.querySelector(".spinner__item--top");
+        let number = document.getElementById("number_id");
+        number.classList.add("chosen");
+        fetch("/api/choose", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // 根据实际情况设置请求头
+          },
+          body: JSON.stringify({
+            number: top_item.textContent,
+          }),
+        }).then(function (response) {
+          console.log(response);
+          if (response.ok) {
+            confetti_effect();
+          }
+        });
+      }
+
+      function random(min, max) {
+        let rand = min - 0.5 + Math.random() * (max - min + 1);
+        return Math.round(rand);
+      }
+
+      function setMax() {
+        fetch("/api/getCount", {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            let _count = data.count;
+            console.log(`Count is now: ${_count}`);
+            // 获取元素
+            var InputElement = document.getElementById("spinner_input");
+            // 更改max属性
+            InputElement.max = _count;
+            // 更改value属性
+            InputElement.value = _count;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM结构就绪后开始轮询
+        setInterval(setMax, 1000);
+      });
+    </script>
+    <!-- 撒花 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script>
+      function confetti_effect() {
+        var count = 600;
+        var defaults = {
+          origin: { y: 0.7, x: 0.7 },
+        };
+
+        function fire(particleRatio, opts) {
+          confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(count * particleRatio),
+          });
+        }
+
+        fire(0.25, {
+          spread: 26,
+          startVelocity: 55,
+        });
+        fire(0.2, {
+          spread: 60,
+        });
+        fire(0.35, {
+          spread: 100,
+          decay: 0.91,
+          scalar: 0.8,
+        });
+        fire(0.1, {
+          spread: 120,
+          startVelocity: 25,
+          decay: 0.92,
+          scalar: 1.2,
+        });
+        fire(0.1, {
+          spread: 120,
+          startVelocity: 45,
+        });
+      }
+    </script>
+  </body>
 </html>

@@ -26,8 +26,8 @@ body {
   margin-bottom: 5rem;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -46,9 +46,9 @@ input[type=number]::-webkit-outer-spin-button {
 .spinner__body {
   position: absolute;
   border-top: 200px solid transparent;
-  border-right: 200px solid #7FC2C2;
-  border-bottom: 200px solid #7FC2C2;
-  border-left: 200px solid #7FC2C2;
+  border-right: 200px solid #7fc2c2;
+  border-bottom: 200px solid #7fc2c2;
+  border-left: 200px solid #7fc2c2;
   z-index: 200;
 }
 
@@ -64,7 +64,7 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: bold;
   font-size: 64px;
   color: #f5f5f5;
-  background-color: #7FC2C2;
+  background-color: #7fc2c2;
   outline: none;
   border: none;
   -webkit-user-select: none;
@@ -72,21 +72,22 @@ input[type=number]::-webkit-outer-spin-button {
   -ms-user-select: none;
   user-select: none;
   z-index: 300;
-  transition: height 0.1s ease-in, width 0.2s ease-in, color 0.1s ease-in, background-color 0.1s ease-in;
+  transition: height 0.1s ease-in, width 0.2s ease-in, color 0.1s ease-in,
+    background-color 0.1s ease-in;
 }
 
 .spinner__start-button:hover {
   height: 150px;
   width: 150px;
-  background-color: #8CD0D0;
+  background-color: #8cd0d0;
   box-shadow: 0px 0px 44px rgba(17, 17, 17, 0.25);
 }
 
 .spinner__start-button:active {
   height: 135px;
   width: 135px;
-  color: #7FC2C2;
-  background-color: #459A9A;
+  color: #7fc2c2;
+  background-color: #459a9a;
   box-shadow: none;
   -webkit-animation: shaking 0.15s ease-in-out infinite;
   animation: shaking 0.15s ease-in-out infinite;
@@ -101,7 +102,7 @@ input[type=number]::-webkit-outer-spin-button {
   font-family: "Dosis", sans-serif;
   font-size: 48px;
   font-weight: bold;
-  color: #7FC2C2;
+  color: #7fc2c2;
   background: #f5f5f5;
   border-radius: 36px;
   text-align: center;
@@ -112,11 +113,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .spinner__input:hover {
-  color: #8CD0D0;
+  color: #8cd0d0;
 }
 
 .spinner__input:focus {
-  color: #459A9A;
+  color: #459a9a;
 }
 
 .spinner__plate {
@@ -140,7 +141,7 @@ input[type=number]::-webkit-outer-spin-button {
   font-family: "Dosis", sans-serif;
   font-weight: bold;
   font-size: 48px;
-  color: #459A9A;
+  color: #459a9a;
   text-align: center;
   transform-origin: 50% 100%;
   z-index: 10;
@@ -160,7 +161,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .spinner__item:nth-child(even):before {
-  border-top: 200px solid #EBEBEB;
+  border-top: 200px solid #ebebeb;
 }
 
 .spinner__item--left {
@@ -235,6 +236,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .container {
   text-align: center;
+  cursor: none;
 }
 
 .number {
@@ -257,8 +259,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .number.chosen {
-  border-color: #FFEE58;
-  background-color: #FDD835;
+  border-color: #ffee58;
+  background-color: #fdd835;
   color: black;
 }
 
